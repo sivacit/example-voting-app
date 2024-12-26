@@ -17,3 +17,16 @@ spec:
       containers:
       - image: sivacit/voting-app-worker:latest
         name: worker
+        env:
+          - name: SPRING_APPLICATION_NAME
+            value: worker-app
+          - name: SPRING_DATASOURCE_URL
+            value: jdbc:postgresql://db:5432/postgres
+          - name: SPRING_DATASOURCE_USERNAME
+            value: postgres
+          - name: SPRING_DATASOURCE_PASSWORD
+            value: postgres
+          - name: SPRING_REDIS_HOST
+            value: redis
+          - name: SPRING_REDIS_PORT
+            value: "6379"
