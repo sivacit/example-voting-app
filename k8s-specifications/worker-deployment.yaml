@@ -15,5 +15,5 @@ spec:
         app: worker
     spec:
       containers:
-      - image: sivacit/voting-app-worker:arm64
+      - image: sivacit/voting-app-worker:latest
         name: worker
