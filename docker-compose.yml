@@ -1,12 +1,11 @@
-# version is now using "compose spec"
-# v2 and v3 are now combined!
-# docker-compose v1.27+ required
+version: "3.9"
 
 services:
   vote:
     build: 
       context: ./vote
       target: dev
+    image: sivacit/voting-app-vote
     depends_on:
       redis:
         condition: service_healthy
@@ -23,10 +22,17 @@ services:
     networks:
       - front-tier
       - back-tier
+    environment:
+      SPRING_APPLICATION_NAME: vote-app
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/postgres
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+      SPRING_REDIS_HOST: redis
+      SPRING_REDIS_PORT: 6379
 
   result:
     build: ./result
-    # use nodemon rather than node for local dev
+    image: sivacit/voting-app-result
     entrypoint: nodemon --inspect=0.0.0.0 server.js
     depends_on:
       db:
@@ -43,6 +49,7 @@ services:
   worker:
     build:
       context: ./worker
+    image: sivacit/voting-app-worker
     depends_on:
       redis:
         condition: service_healthy 
@@ -50,14 +57,23 @@ services:
         condition: service_healthy 
     networks:
       - back-tier
+    environment:
+      SPRING_APPLICATION_NAME: worker-app
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/postgres
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+      SPRING_REDIS_HOST: redis
+      SPRING_REDIS_PORT: 6379
 
   redis:
     image: redis:alpine
     volumes:
       - "./healthchecks:/healthchecks"
     healthcheck:
-      test: /healthchecks/redis.sh
-      interval: "5s"
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 3
     networks:
       - back-tier
 
@@ -65,19 +81,18 @@ services:
     image: postgres:15-alpine
     environment:
       POSTGRES_USER: "postgres"
-      POSTGRES_PASSWORD: "postgres"
+      POSTGRES_PASSWORD: "postgres"      
     volumes:
       - "db-data:/var/lib/postgresql/data"
       - "./healthchecks:/healthchecks"
     healthcheck:
-      test: /healthchecks/postgres.sh
-      interval: "5s"
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 3
     networks:
       - back-tier
 
-  # this service runs once to seed the database with votes
-  # it won't run unless you specify the "seed" profile
-  # docker compose --profile seed up -d
   seed:
     build: ./seed-data
     profiles: ["seed"]
@@ -93,4 +108,6 @@ volumes:
 
 networks:
   front-tier:
+    name: front-tier
   back-tier:
+    name: back-tier
