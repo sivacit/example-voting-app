@@ -6,6 +6,7 @@ services:
       context: ./vote
       target: dev
     image: sivacit/voting-app-vote
+    platform: linux/arm64
     depends_on:
       redis:
         condition: service_healthy
@@ -33,6 +34,7 @@ services:
   result:
     build: ./result
     image: sivacit/voting-app-result
+    platform: linux/arm64
     entrypoint: nodemon --inspect=0.0.0.0 server.js
     depends_on:
       db:
@@ -50,6 +52,7 @@ services:
     build:
       context: ./worker
     image: sivacit/voting-app-worker
+    platform: linux/arm64
     depends_on:
       redis:
         condition: service_healthy 
@@ -67,6 +70,7 @@ services:
 
   redis:
     image: redis:alpine
+    platform: linux/arm64
     volumes:
       - "./healthchecks:/healthchecks"
     healthcheck:
@@ -79,6 +83,7 @@ services:
 
   db:
     image: postgres:15-alpine
+    platform: linux/arm64
     environment:
       POSTGRES_USER: "postgres"
       POSTGRES_PASSWORD: "postgres"      
