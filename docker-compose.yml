@@ -5,7 +5,7 @@ services:
     build: 
       context: ./vote
       target: dev
-    image: sivacit/voting-app-vote
+    image: sivacit/voting-app-vote:arm64
     platform: linux/arm64
     depends_on:
       redis:
@@ -33,7 +33,7 @@ services:
 
   result:
     build: ./result
-    image: sivacit/voting-app-result
+    image: sivacit/voting-app-result:arm64
     platform: linux/arm64
     entrypoint: nodemon --inspect=0.0.0.0 server.js
     depends_on:
@@ -51,7 +51,7 @@ services:
   worker:
     build:
       context: ./worker
-    image: sivacit/voting-app-worker
+    image: sivacit/voting-app-worker:arm64
     platform: linux/arm64
     depends_on:
       redis:

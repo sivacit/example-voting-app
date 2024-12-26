@@ -15,7 +15,7 @@ spec:
         app: vote
     spec:
       containers:
-      - image: sivacit/voting-app-vote
+      - image: sivacit/voting-app-vote:arm64
         name: vote
         ports:
         - containerPort: 80
