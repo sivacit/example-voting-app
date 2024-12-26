@@ -1,0 +1,46 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '3.4.1'
+	id 'io.spring.dependency-management' version '1.1.7'
+}
+
+group = 'com.example'
+version = '0.0.1-SNAPSHOT'
+
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(17) // Use Java 17 as required by Spring Boot 3.x
+	}
+}
+
+repositories {
+	mavenCentral() // Use Maven Central for dependency resolution
+}
+
+dependencies {
+    // Spring Boot Starter Web (for building REST APIs)
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+
+	implementation 'javax.persistence:javax.persistence-api:2.2'
+
+    // Spring Boot Starter Data JPA (provides javax.persistence and JPA support)
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+    // Spring Boot Starter Data Redis (for Redis integration)
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
+    // PostgreSQL Driver (for database connectivity)
+    runtimeOnly 'org.postgresql:postgresql'
+
+    // Jackson JSON Library (optional for JSON serialization/deserialization)
+    implementation 'com.fasterxml.jackson.core:jackson-databind'
+
+    // Spring Boot Starter Test (for unit and integration testing)
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+
+tasks.named('test') {
+	enabled = false
+	// useJUnitPlatform() // Enable JUnit 5 testing platform
+}

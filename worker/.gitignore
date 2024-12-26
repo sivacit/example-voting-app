@@ -1,9 +1,3 @@
-*.pyc
-project.lock.json
-bin/
-obj/
-.vs/
-node_modules/
 HELP.md
 .gradle
 build/
