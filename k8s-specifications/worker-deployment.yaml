@@ -15,13 +15,13 @@ spec:
         app: worker
     spec:
       initContainers:
-        - name: agent-container
-          image: apache/skywalking-java-agent:9.3.0-java17
-          volumeMounts:
-            - name: skywalking-agent
-              mountPath: /skywalking/agent
-          command: [ "/bin/sh" ]
-          args: [ "-c", "cp -R /skywalking/agent/* /skywalking/agent/" ]
+      - name: agent-container
+        image: apache/skywalking-java-agent:9.3.0-java17
+        volumeMounts:
+          - name: skywalking-agent
+            mountPath: /shared/agent
+        command: [ "/bin/sh" ]
+        args: [ "-c", "cp -R /skywalking/agent/* /shared/agent/" ]
       containers:
         - name: worker
           image: sivacit/voting-app-worker:latest
