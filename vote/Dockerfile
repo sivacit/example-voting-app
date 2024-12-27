@@ -9,9 +9,13 @@ RUN apt-get update && \
 # Set the application directory
 WORKDIR /usr/local/app
 
+ENV SW_AGENT_COLLECTOR_BACKEND_SERVICES=dev.nuaura.ai:11800
+
 # Install our requirements.txt
 COPY requirements.txt ./requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install apache-skywalking==1.0.1
+    
 
 # dev defines a stage for development, where it'll watch for filesystem changes
 FROM base AS dev

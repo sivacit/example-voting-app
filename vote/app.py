@@ -5,6 +5,10 @@ import socket
 import random
 import json
 import logging
+from skywalking import agent, config
+
+config.init(collector_address='dev.nuaura.ai:11800', service_name='vote-app')
+agent.start()
 
 option_a = os.getenv('OPTION_A', "Cats")
 option_b = os.getenv('OPTION_B', "Dogs")
