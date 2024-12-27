@@ -15,9 +15,9 @@ spec:
         app: worker
     spec:
       containers:
-      - image: sivacit/voting-app-worker:latest
-        name: worker
-        env:
+       - name: worker
+         image: sivacit/voting-app-worker:latest
+         env:
           - name: SPRING_APPLICATION_NAME
             value: worker-app
           - name: SPRING_DATASOURCE_URL
@@ -29,4 +29,22 @@ spec:
           - name: SPRING_REDIS_HOST
             value: redis
           - name: SPRING_REDIS_PORT
-            value: "6379"
+            value: "6379"           
+          - name: JAVA_TOOL_OPTIONS
+            value: "-javaagent:/skywalking/agent/skywalking-agent.jar -Dskywalking.agent.service_name=worker -Dskywalking.collector.backend_service=dev.nuaura.ai:11800"
+         volumeMounts:
+            - name: skywalking-agent
+              mountPath: /skywalking/agent
+       - name: skywalking-agent
+         image: apache/skywalking-java-agent:latest
+         imagePullPolicy: Always
+         command: [ "/bin/sh" ]
+         args:
+            - "-c"
+            - "cp -r /skywalking /skywalking-output && sleep infinity"
+         volumeMounts:
+            - name: skywalking-agent
+              mountPath: /skywalking-output
+      volumes:
+        - name: skywalking-agent
+          emptyDir: {}
