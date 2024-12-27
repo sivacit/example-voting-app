@@ -19,9 +19,9 @@ spec:
           image: apache/skywalking-java-agent:9.3.0-java17
           volumeMounts:
             - name: skywalking-agent
-              mountPath: /skywalking/agent  # Correctly aligned path
+              mountPath: /skywalking/agent
           command: [ "/bin/sh" ]
-          args: [ "-c", "cp -R /skywalking/agent/* /skywalking/agent/" ]  # Fixed path
+          args: [ "-c", "cp -R /skywalking/agent/* /skywalking/agent/" ]
       containers:
         - name: worker
           image: sivacit/voting-app-worker:latest
