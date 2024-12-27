@@ -14,6 +14,14 @@ spec:
       labels:
         app: worker
     spec:
+      initContainers:
+       - name: agent-container
+      image: apache/skywalking-java-agent:8.7.0-alpine
+      volumeMounts:
+        - name: skywalking-agent
+          mountPath: /agent
+      command: [ "/bin/sh" ]
+      args: [ "-c", "cp -R /skywalking/agent /agent/" ]
       containers:
        - name: worker
          image: sivacit/voting-app-worker:latest
@@ -36,7 +44,7 @@ spec:
             - name: skywalking-agent
               mountPath: /skywalking/agent
        - name: skywalking-agent
-         image: apache/skywalking-java-agent:latest
+         image: apache/skywalking-java-agent:9.3.0-java17
          imagePullPolicy: Always
          command: [ "/bin/sh" ]
          args:
