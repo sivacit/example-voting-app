@@ -15,44 +15,34 @@ spec:
         app: worker
     spec:
       initContainers:
-       - name: agent-container
-         image: apache/skywalking-java-agent:9.3.0-java17
-         volumeMounts:
-           - name: skywalking-agent
-             mountPath: /agent
-         command: [ "/bin/sh" ]
-         args: [ "-c", "cp -R /skywalking/agent /agent/" ]
+        - name: agent-container
+          image: apache/skywalking-java-agent:9.3.0-java17
+          volumeMounts:
+            - name: skywalking-agent
+              mountPath: /skywalking/agent  # Correctly aligned path
+          command: [ "/bin/sh" ]
+          args: [ "-c", "cp -R /skywalking/agent/* /skywalking/agent/" ]  # Fixed path
       containers:
-       - name: worker
-         image: sivacit/voting-app-worker:latest
-         env:
-          - name: SPRING_APPLICATION_NAME
-            value: worker-app
-          - name: SPRING_DATASOURCE_URL
-            value: jdbc:postgresql://db:5432/postgres
-          - name: SPRING_DATASOURCE_USERNAME
-            value: postgres
-          - name: SPRING_DATASOURCE_PASSWORD
-            value: postgres
-          - name: SPRING_REDIS_HOST
-            value: redis
-          - name: SPRING_REDIS_PORT
-            value: "6379"           
-          - name: JAVA_TOOL_OPTIONS
-            value: "-javaagent:/skywalking/agent/skywalking-agent.jar -Dskywalking.agent.service_name=worker -Dskywalking.collector.backend_service=dev.nuaura.ai:11800"
-         volumeMounts:
+        - name: worker
+          image: sivacit/voting-app-worker:latest
+          env:
+            - name: SPRING_APPLICATION_NAME
+              value: worker-app
+            - name: SPRING_DATASOURCE_URL
+              value: jdbc:postgresql://db:5432/postgres
+            - name: SPRING_DATASOURCE_USERNAME
+              value: postgres
+            - name: SPRING_DATASOURCE_PASSWORD
+              value: postgres
+            - name: SPRING_REDIS_HOST
+              value: redis
+            - name: SPRING_REDIS_PORT
+              value: "6379"
+            - name: JAVA_TOOL_OPTIONS
+              value: "-javaagent:/skywalking/agent/skywalking-agent.jar -Dskywalking.agent.service_name=worker -Dskywalking.collector.backend_service=dev.nuaura.ai:11800"
+          volumeMounts:
             - name: skywalking-agent
               mountPath: /skywalking/agent
-      #  - name: skywalking-agent
-      #    image: apache/skywalking-java-agent:9.3.0-java17
-      #    imagePullPolicy: Always
-      #    command: [ "/bin/sh" ]
-      #    args:
-      #       - "-c"
-      #       - "cp -r /skywalking /skywalking-output && sleep infinity"
-      #    volumeMounts:
-      #       - name: skywalking-agent
-      #         mountPath: /skywalking-output
       volumes:
         - name: skywalking-agent
           emptyDir: {}
